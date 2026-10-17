@@ -57,8 +57,13 @@ grep -q '^APP_KEY=base64' .env || php artisan key:generate --force
 
 say "4/5 Creating MySQL database and migrating"
 echo "(XAMPP MySQL must be running - start it from the XAMPP control panel)"
-mysql -h 127.0.0.1 -uroot -e "CREATE DATABASE IF NOT EXISTS govdoc_bd CHARACTER SET utf8mb4 COLLATE utf8mb4_unicode_ci" \
-  || die "Could not reach MySQL. Start MySQL in XAMPP, or set DB_USERNAME/DB_PASSWORD in laravel-app/.env and create database govdoc_bd manually."
+# A dedicated DB user avoids depending on how root is configured. If root has a password:  MYSQL_ROOT_PASSWORD=xxx bash scripts/setup-mac.sh
+MYSQL_ARGS=(-h 127.0.0.1 -uroot)
+[ -n "${MYSQL_ROOT_PASSWORD:-}" ] && MYSQL_ARGS+=("-p${MYSQL_ROOT_PASSWORD}")
+mysql "${MYSQL_ARGS[@]}" -e "CREATE DATABASE IF NOT EXISTS govdoc_bd CHARACTER SET utf8mb4 COLLATE utf8mb4_unicode_ci; CREATE USER IF NOT EXISTS 'govdoc'@'localhost' IDENTIFIED BY 'govdoc_dev_pass'; CREATE USER IF NOT EXISTS 'govdoc'@'127.0.0.1' IDENTIFIED BY 'govdoc_dev_pass'; GRANT ALL PRIVILEGES ON govdoc_bd.* TO 'govdoc'@'localhost'; GRANT ALL PRIVILEGES ON govdoc_bd.* TO 'govdoc'@'127.0.0.1'; FLUSH PRIVILEGES;" \
+  || die "Could not create the database user. Start MySQL in XAMPP; if root has a password run: MYSQL_ROOT_PASSWORD=yourpassword bash scripts/setup-mac.sh"
+set_env .env DB_USERNAME govdoc
+set_env .env DB_PASSWORD govdoc_dev_pass
 php artisan migrate --seed --force
 cd "$ROOT"
 
