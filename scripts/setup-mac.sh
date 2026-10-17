@@ -16,7 +16,7 @@ command -v composer >/dev/null || die "composer not found. Install it: https://g
 command -v python3 >/dev/null  || die "python3 not found (need 3.10+)."
 php -r 'exit(version_compare(PHP_VERSION, "8.2.0", ">=") ? 0 : 1);' || die "PHP >= 8.2 required (found $(php -r 'echo PHP_VERSION;')). Update XAMPP."
 for ext in mbstring openssl pdo_mysql fileinfo; do
-  php -m | grep -qi "^$ext$" || die "PHP extension '$ext' missing."
+  php -r "exit(extension_loaded('$ext') ? 0 : 1);" || die "PHP extension '$ext' missing."
 done
 python3 -c 'import sys; sys.exit(0 if sys.version_info >= (3,10) else 1)' || die "Python 3.10+ required."
 echo "php $(php -r 'echo PHP_VERSION;'), composer $(composer --version | awk '{print $3}'), $(python3 --version)"
