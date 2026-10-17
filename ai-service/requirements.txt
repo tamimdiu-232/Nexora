@@ -1,0 +1,11 @@
+fastapi>=0.110
+uvicorn>=0.29
+pydantic>=2
+pydantic-settings>=2
+pypdf>=4
+numpy>=1.26
+python-multipart>=0.0.9
+pytest>=8
+httpx>=0.27
+reportlab>=4   # test fixtures only
+# optional: sentence-transformers  (set EMBEDDER=st)

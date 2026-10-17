@@ -1,0 +1,13 @@
+# secrets and local config
+.env
+*.env.local
+# Python
+ai-service/.venv/
+ai-service/data/
+__pycache__/
+.pytest_cache/
+*.pyc
+# OS / editor
+.DS_Store
+.idea/
+.vscode/

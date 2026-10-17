@@ -1,0 +1,24 @@
+# OPTIONAL. The project runs fine without Docker (see README). UNTESTED: Docker was not available in the build sandbox.
+# Provides MySQL and the AI service; run the Laravel app on your host with `php artisan serve`.
+# Usage:  cp .env.docker.example .env   (edit the token)   then   docker compose up -d --build
+services:
+  mysql:
+    image: mysql:8.0
+    environment:
+      MYSQL_DATABASE: govdoc_bd
+      MYSQL_ROOT_PASSWORD: ${MYSQL_ROOT_PASSWORD:?set in .env}
+    ports: ["127.0.0.1:3307:3306"]       # 3307 so it does not clash with XAMPP's MySQL on 3306
+    volumes: ["mysql_data:/var/lib/mysql"]
+  ai-service:
+    build: ./ai-service
+    environment:
+      SERVICE_TOKEN: ${AI_SERVICE_TOKEN:?set in .env}
+      OCR_LANGS: ${OCR_LANGS:-eng}
+      LLM_PROVIDER: ${LLM_PROVIDER:-extractive}
+      LLM_API_KEY: ${LLM_API_KEY:-}
+      LLM_MODEL: ${LLM_MODEL:-}
+    ports: ["127.0.0.1:8001:8001"]       # reachable from this machine only
+    volumes: ["ai_data:/data"]
+volumes:
+  mysql_data:
+  ai_data:
