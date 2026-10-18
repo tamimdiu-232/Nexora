@@ -3,8 +3,6 @@
 
 Upload documents (including scanned PDFs), search them by keyword or meaning, ask questions in Bangla or English and get answers with the exact source page, then have a human reviewer verify them. Role-based access, organization/department isolation and a full audit trail are built in. The demo data in this repository is synthetic.
 
-> Internal names were kept stable so existing installs keep working: the database is `govdoc_bd`, the config file is `config/govdoc.php`, the artisan commands start with `govdoc:`.
-
 ## What is in this repository
 
 | Folder | Contents | Verified status |
@@ -28,10 +26,10 @@ Upload documents (including scanned PDFs), search them by keyword or meaning, as
 ## Setup (once)
 
 ```bash
-cd govdoc-bd
+cd nexora
 bash scripts/setup-mac.sh
 ```
-The script: creates the Laravel skeleton in `laravel-app/`, copies `laravel-overlay/` into it, writes `.env` (MySQL `govdoc_bd`, root/no password, a random service token shared with the AI service), creates the database, runs migrations and the seeder, and builds the Python virtualenv.
+The script: creates the Laravel skeleton in `laravel-app/`, copies `laravel-overlay/` into it, writes `.env` (MySQL `nexora`, root/no password, a random service token shared with the AI service), creates the database, runs migrations and the seeder, and builds the Python virtualenv.
 
 If your MySQL root has a password, edit `laravel-app/.env` (`DB_PASSWORD`) and re-run `php artisan migrate --seed`.
 
@@ -49,9 +47,9 @@ cd laravel-app && php artisan serve          # http://127.0.0.1:8000
 ```
 Then process the seeded demo documents (AI service must be running):
 ```bash
-cd laravel-app && php artisan govdoc:process
+cd laravel-app && php artisan nexora:process
 ```
-If you restart the AI service with a wiped `ai-service/data/`, rebuild its index: `php artisan govdoc:process --all`.
+If you restart the AI service with a wiped `ai-service/data/`, rebuild its index: `php artisan nexora:process --all`.
 
 Queue: `.env` uses `QUEUE_CONNECTION=sync` (uploads are processed inside the request; simplest for a demo). For async processing set `QUEUE_CONNECTION=database` and run `php artisan queue:work`.
 
@@ -112,4 +110,4 @@ Unzip the new zip somewhere, then from the *new* folder run:
 export PATH="/Applications/XAMPP/xamppfiles/bin:$PATH"
 bash scripts/update-mac.sh "/full/path/to/your/existing/folder"
 ```
-It copies the new code over your install (your `.env`, database, uploads and `vendor/` are untouched), runs `php artisan migrate`, and tells you the two follow-up commands (restart the AI service, then `php artisan govdoc:process --all`).
+It copies the new code over your install (your `.env`, database, uploads and `vendor/` are untouched), runs `php artisan migrate`, and tells you the two follow-up commands (restart the AI service, then `php artisan nexora:process --all`).

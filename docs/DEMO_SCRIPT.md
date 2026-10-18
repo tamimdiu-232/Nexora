@@ -1,6 +1,6 @@
 # Capstone demonstration script (≈10 minutes)
 
-Preparation: setup done, both servers running, `php artisan govdoc:process` completed (seeded documents show "completed", the corrupted one "failed").
+Preparation: setup done, both servers running, `php artisan nexora:process` completed (seeded documents show "completed", the corrupted one "failed").
 
 1. Log in as **officer.planning@demo-a.test**. Show the dashboard (counts, one failed job).
 2. **Upload** `sample-documents/01_infrastructure_project_report.pdf` again under a new title. Watch status → completed. Open it: classification, reference number, budget, deadline (with "AI, unverified" labels).

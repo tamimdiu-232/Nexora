@@ -35,7 +35,7 @@
 @if($document->processing_status === 'failed')
     <div class="alert alert-danger"><i class="bi bi-x-octagon-fill"></i><div>Processing failed: {{ $document->processing_error }}@if($lastJob?->error_code) <code>({{ $lastJob->error_code }})</code>@endif</div></div>
 @elseif(in_array($document->processing_status, ['pending', 'processing']))
-    <div class="alert alert-info"><i class="bi bi-hourglass-split"></i><div>This document is {{ $document->processing_status }}. Refresh in a moment. If nothing happens, run <code>php artisan govdoc:process</code>.</div></div>
+    <div class="alert alert-info"><i class="bi bi-hourglass-split"></i><div>This document is {{ $document->processing_status }}. Refresh in a moment. If nothing happens, run <code>php artisan nexora:process</code>.</div></div>
 @endif
 
 <div class="row g-3">

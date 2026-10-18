@@ -55,7 +55,7 @@ class UploadAndProcessingTest extends TestCase
     public function test_oversized_upload_is_rejected(): void
     {
         [, , $u] = $this->officer();
-        $big = UploadedFile::fake()->create('big.pdf', config('govdoc.max_upload_kb') + 10, 'application/pdf');
+        $big = UploadedFile::fake()->create('big.pdf', config('nexora.max_upload_kb') + 10, 'application/pdf');
         $this->actingAs($u)->post('/documents', ['file' => $big, 'title' => 'T'])->assertSessionHasErrors('file');
         $this->assertSame(0, Document::count());
     }

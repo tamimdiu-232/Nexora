@@ -2,7 +2,7 @@
 <html lang="en">
 <head>@include('layouts.head')</head>
 <body>
-@php $brand = config('govdoc.brand'); @endphp
+@php $brand = config('nexora.brand'); @endphp
 <div class="nx-auth">
     <section class="nx-auth-brand">
         <div>

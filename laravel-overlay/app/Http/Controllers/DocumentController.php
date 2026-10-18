@@ -82,7 +82,7 @@ class DocumentController extends Controller
         $data = $request->validate([
             'title' => ['required', 'string', 'max:255'],
             'description' => ['nullable', 'string', 'max:5000'],
-            'category' => ['required', Rule::in(config('govdoc.categories'))],
+            'category' => ['required', Rule::in(config('nexora.categories'))],
             'tags' => ['nullable', 'string', 'max:255'],
             'department_id' => ['nullable', 'integer'],
             'issuing_organization' => ['nullable', 'string', 'max:255'],

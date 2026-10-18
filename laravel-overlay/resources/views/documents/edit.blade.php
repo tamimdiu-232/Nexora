@@ -8,7 +8,7 @@
     <div class="row g-3">
         <div class="col-md-6"><label class="form-label">Title</label><input name="title" class="form-control" required value="{{ old('title', $document->title) }}"></div>
         <div class="col-md-6"><label class="form-label">Category <span class="text-muted fw-normal">(correct the AI prediction here)</span></label>
-            <select name="category" class="form-select">@foreach(config('govdoc.categories') as $c)<option @selected(old('category', $document->category) === $c)>{{ $c }}</option>@endforeach</select></div>
+            <select name="category" class="form-select">@foreach(config('nexora.categories') as $c)<option @selected(old('category', $document->category) === $c)>{{ $c }}</option>@endforeach</select></div>
         <div class="col-md-6"><label class="form-label">Tags</label><input name="tags" class="form-control" value="{{ old('tags', $document->tags) }}"></div>
         @if(auth()->user()->isOrgAdmin())
             <div class="col-md-6"><label class="form-label">Department</label><select name="department_id" class="form-select"><option value="">Organization-wide</option>

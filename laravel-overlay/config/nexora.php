@@ -7,8 +7,8 @@ return [
     'ai_url' => env('AI_SERVICE_URL', 'http://127.0.0.1:8001'),
     'ai_token' => env('AI_SERVICE_TOKEN', ''),
     'ai_timeout' => (int) env('AI_SERVICE_TIMEOUT', 180),
-    'max_upload_kb' => (int) env('GOVDOC_MAX_UPLOAD_KB', 20480),
-    'seed_process' => (bool) env('GOVDOC_SEED_PROCESS', false),
+    'max_upload_kb' => (int) env('NEXORA_MAX_UPLOAD_KB', 20480),
+    'seed_process' => (bool) env('NEXORA_SEED_PROCESS', false),
 
     // Prototype categories - not an official government classification standard.
     'categories' => [

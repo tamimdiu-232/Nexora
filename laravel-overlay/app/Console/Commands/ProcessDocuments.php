@@ -8,7 +8,7 @@ use Illuminate\Console\Command;
 
 class ProcessDocuments extends Command
 {
-    protected $signature = 'govdoc:process {--all : Re-process every non-archived document (use after an AI service data reset)}';
+    protected $signature = 'nexora:process {--all : Re-process every non-archived document (use after an AI service data reset)}';
     protected $description = 'Send pending (or all) documents to the AI service for extraction and indexing';
 
     public function handle(DocumentProcessor $processor): int

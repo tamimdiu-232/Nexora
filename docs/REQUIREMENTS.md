@@ -7,7 +7,7 @@ Status legend: **Tested** = automated test passed in the build sandbox. **Implem
 | Req | Description | Where implemented | Status |
 |---|---|---|---|
 | FR1 | Accounts | `UserController`, `ProfileController`, `AuthController` | Implemented (unrun) |
-| FR2 | Role-based access control | `config/govdoc.php`, `RequirePermission`, Policies | Implemented (unrun) |
+| FR2 | Role-based access control | `config/nexora.php`, `RequirePermission`, Policies | Implemented (unrun) |
 | FR3 | Organizations/departments | `OrganizationController`, `DepartmentController` | Implemented (unrun) |
 | FR4/5 | Upload, metadata, file info | `DocumentController`, `DocumentService`, `StoreDocumentRequest` | Implemented (unrun) |
 | FR6 | Keyword search with filters | `SearchController` (keyword mode) | Implemented (unrun) |

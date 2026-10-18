@@ -4,7 +4,7 @@
 <body>
 @php
     $me = auth()->user();
-    $brand = config('govdoc.brand');
+    $brand = config('nexora.brand');
     // [permission needed, route, label, icon, route names that mark the item as active]
     $menu = [
         ['dashboard.view', 'dashboard', 'Dashboard', 'bi-grid-1x2', ['dashboard']],

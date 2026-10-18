@@ -62,7 +62,7 @@ class UserController extends Controller
 
     private function formData(User $actor, User $user): array
     {
-        return ['user' => $user, 'roles' => collect(config('govdoc.roles'))->only($actor->assignableRoles()),
+        return ['user' => $user, 'roles' => collect(config('nexora.roles'))->only($actor->assignableRoles()),
             'organizations' => $actor->isSuper() ? Organization::orderBy('name')->get() : collect(),
             'departments' => $actor->isSuper() ? collect()
                 : Department::where('organization_id', $actor->organization_id)

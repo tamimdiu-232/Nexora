@@ -16,13 +16,13 @@ class StoreDocumentRequest extends FormRequest
     public function rules(): array
     {
         return [
-            'file' => ['required', 'file', 'mimes:pdf', 'mimetypes:application/pdf', 'max:' . config('govdoc.max_upload_kb'),
+            'file' => ['required', 'file', 'mimes:pdf', 'mimetypes:application/pdf', 'max:' . config('nexora.max_upload_kb'),
                 function ($attr, $value, $fail) {
                     if (!app(DocumentService::class)->isPdf($value->getRealPath())) $fail('The file content is not a valid PDF.');
                 }],
             'title' => ['required', 'string', 'max:255'],
             'description' => ['nullable', 'string', 'max:5000'],
-            'category' => ['nullable', Rule::in(config('govdoc.categories'))],
+            'category' => ['nullable', Rule::in(config('nexora.categories'))],
             'tags' => ['nullable', 'string', 'max:255'],
             'department_id' => ['nullable', 'integer', 'exists:departments,id'],
         ];

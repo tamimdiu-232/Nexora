@@ -29,18 +29,18 @@ class User extends Authenticatable
     public function isOrgAdmin(): bool { return $this->role === 'org_admin'; }
     public function isDeptAdmin(): bool { return $this->role === 'dept_admin'; }
 
-    public function roleLabel(): string { return config('govdoc.roles.' . $this->role, $this->role); }
+    public function roleLabel(): string { return config('nexora.roles.' . $this->role, $this->role); }
 
     public function hasPermission(string $permission): bool
     {
-        $perms = config('govdoc.permissions.' . $this->role, []);
+        $perms = config('nexora.permissions.' . $this->role, []);
         return in_array('*', $perms, true) || in_array($permission, $perms, true);
     }
 
     /** Roles this user may assign to others. */
     public function assignableRoles(): array
     {
-        $all = array_keys(config('govdoc.roles'));
+        $all = array_keys(config('nexora.roles'));
         return match ($this->role) {
             'super_admin' => ['org_admin'], // platform admins only create Organization Admins; they run everything else themselves
             'org_admin' => array_values(array_diff($all, ['super_admin'])),

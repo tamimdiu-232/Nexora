@@ -15,7 +15,7 @@ class SearchController extends Controller
     {
         $u = $request->user();
         $request->validate(['q' => ['nullable', 'string', 'max:300'], 'mode' => ['nullable', 'in:keyword,semantic'],
-            'category' => ['nullable', 'in:' . implode(',', config('govdoc.categories'))],
+            'category' => ['nullable', 'in:' . implode(',', config('nexora.categories'))],
             'from' => ['nullable', 'date'], 'to' => ['nullable', 'date'], 'department_id' => ['nullable', 'integer']]);
         $q = trim((string) $request->input('q', ''));
         $mode = $request->input('mode', 'keyword');

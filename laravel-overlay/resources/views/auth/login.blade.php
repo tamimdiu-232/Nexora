@@ -2,7 +2,7 @@
 @section('title', 'Sign in')
 @section('content')
 <h2>Welcome back</h2>
-<p class="text-muted mb-4">Sign in to your {{ config('govdoc.brand.name') }} workspace.</p>
+<p class="text-muted mb-4">Sign in to your {{ config('nexora.brand.name') }} workspace.</p>
 <form method="POST" action="{{ route('login') }}" data-loading="Signing in...">
     @csrf
     <div class="mb-3"><label class="form-label" for="email">Email</label>

@@ -58,7 +58,7 @@ class DatabaseSeeder extends Seeder
         foreach ($items as [$file, $title, $org, $dept, $uploader]) {
             if (!is_file("$dir/$file")) continue;
             $doc = $docs->store(new File("$dir/$file"), $uploader, $org->id, $dept?->id, ['title' => $title], $file);
-            if (config('govdoc.seed_process')) ProcessDocumentJob::dispatchSync($doc->id);
+            if (config('nexora.seed_process')) ProcessDocumentJob::dispatchSync($doc->id);
         }
     }
 }

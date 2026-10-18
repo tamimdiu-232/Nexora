@@ -13,7 +13,7 @@
         <button class="btn btn-primary" type="submit"><i class="bi bi-search me-1"></i> Search</button>
     </div>
     <div class="row g-2 mt-1">
-        <div class="col-md-3"><select name="category" class="form-select form-select-sm"><option value="">All categories</option>@foreach(config('govdoc.categories') as $c)<option @selected(request('category') === $c)>{{ $c }}</option>@endforeach</select></div>
+        <div class="col-md-3"><select name="category" class="form-select form-select-sm"><option value="">All categories</option>@foreach(config('nexora.categories') as $c)<option @selected(request('category') === $c)>{{ $c }}</option>@endforeach</select></div>
         <div class="col-md-3"><select name="department_id" class="form-select form-select-sm"><option value="">All my departments</option>@foreach($departments as $d)<option value="{{ $d->id }}" @selected(request('department_id') == $d->id)>{{ $d->name }}</option>@endforeach</select></div>
         <div class="col-md-3"><input type="date" class="form-control form-control-sm" name="from" value="{{ request('from') }}" title="Uploaded from"></div>
         <div class="col-md-3"><input type="date" class="form-control form-control-sm" name="to" value="{{ request('to') }}" title="Uploaded to"></div>

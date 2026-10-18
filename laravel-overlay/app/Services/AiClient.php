@@ -13,10 +13,10 @@ class AiClient
 {
     private function http(?int $timeout = null): PendingRequest
     {
-        return Http::baseUrl(rtrim(config('govdoc.ai_url'), '/'))
-            ->withHeaders(['X-Service-Token' => (string) config('govdoc.ai_token')])
+        return Http::baseUrl(rtrim(config('nexora.ai_url'), '/'))
+            ->withHeaders(['X-Service-Token' => (string) config('nexora.ai_token')])
             ->acceptJson()
-            ->timeout($timeout ?? (int) config('govdoc.ai_timeout'));
+            ->timeout($timeout ?? (int) config('nexora.ai_timeout'));
     }
 
     private function send(callable $call): array

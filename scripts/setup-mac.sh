@@ -45,13 +45,13 @@ set_env .env APP_NAME Nexora
 set_env .env DB_CONNECTION mysql
 set_env .env DB_HOST 127.0.0.1
 set_env .env DB_PORT 3306
-set_env .env DB_DATABASE govdoc_bd
+set_env .env DB_DATABASE nexora
 set_env .env DB_USERNAME root
 set_env .env DB_PASSWORD ""
 set_env .env QUEUE_CONNECTION sync          # no queue worker needed; use "database" + php artisan queue:work for async
 set_env .env AI_SERVICE_URL http://127.0.0.1:8001
 set_env .env AI_SERVICE_TOKEN "$TOKEN"
-set_env .env GOVDOC_SEED_PROCESS false
+set_env .env NEXORA_SEED_PROCESS false
 set_env .env MAIL_MAILER log                # password-reset links are written to storage/logs/laravel.log
 grep -q '^APP_KEY=base64' .env || php artisan key:generate --force
 
@@ -60,10 +60,10 @@ echo "(XAMPP MySQL must be running - start it from the XAMPP control panel)"
 # A dedicated DB user avoids depending on how root is configured. If root has a password:  MYSQL_ROOT_PASSWORD=xxx bash scripts/setup-mac.sh
 MYSQL_ARGS=(-h 127.0.0.1 -uroot)
 [ -n "${MYSQL_ROOT_PASSWORD:-}" ] && MYSQL_ARGS+=("-p${MYSQL_ROOT_PASSWORD}")
-mysql "${MYSQL_ARGS[@]}" -e "CREATE DATABASE IF NOT EXISTS govdoc_bd CHARACTER SET utf8mb4 COLLATE utf8mb4_unicode_ci; CREATE USER IF NOT EXISTS 'govdoc'@'localhost' IDENTIFIED BY 'govdoc_dev_pass'; CREATE USER IF NOT EXISTS 'govdoc'@'127.0.0.1' IDENTIFIED BY 'govdoc_dev_pass'; GRANT ALL PRIVILEGES ON govdoc_bd.* TO 'govdoc'@'localhost'; GRANT ALL PRIVILEGES ON govdoc_bd.* TO 'govdoc'@'127.0.0.1'; FLUSH PRIVILEGES;" \
+mysql "${MYSQL_ARGS[@]}" -e "CREATE DATABASE IF NOT EXISTS nexora CHARACTER SET utf8mb4 COLLATE utf8mb4_unicode_ci; CREATE USER IF NOT EXISTS 'nexora'@'localhost' IDENTIFIED BY 'nexora_dev_pass'; CREATE USER IF NOT EXISTS 'nexora'@'127.0.0.1' IDENTIFIED BY 'nexora_dev_pass'; GRANT ALL PRIVILEGES ON nexora.* TO 'nexora'@'localhost'; GRANT ALL PRIVILEGES ON nexora.* TO 'nexora'@'127.0.0.1'; FLUSH PRIVILEGES;" \
   || die "Could not create the database user. Start MySQL in XAMPP; if root has a password run: MYSQL_ROOT_PASSWORD=yourpassword bash scripts/setup-mac.sh"
-set_env .env DB_USERNAME govdoc
-set_env .env DB_PASSWORD govdoc_dev_pass
+set_env .env DB_USERNAME nexora
+set_env .env DB_PASSWORD nexora_dev_pass
 php artisan migrate --seed --force
 cd "$ROOT"
 
@@ -91,5 +91,5 @@ Setup finished. Start the project in 2 terminals:
 
 Then open http://127.0.0.1:8000  and log in with the development accounts in README.md.
 Process the demo documents (AI service must be running):
-    cd laravel-app && php artisan govdoc:process
+    cd laravel-app && php artisan nexora:process
 MSG

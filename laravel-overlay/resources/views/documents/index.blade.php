@@ -11,7 +11,7 @@
     <div class="row g-2">
         <div class="col-lg-4"><input class="form-control" name="q" value="{{ request('q') }}" placeholder="Search title, tags or description"></div>
         <div class="col-md-4 col-lg-3"><select class="form-select" name="category"><option value="">All categories</option>
-            @foreach(config('govdoc.categories') as $c)<option @selected(request('category') === $c)>{{ $c }}</option>@endforeach</select></div>
+            @foreach(config('nexora.categories') as $c)<option @selected(request('category') === $c)>{{ $c }}</option>@endforeach</select></div>
         <div class="col-md-4 col-lg-2"><select class="form-select" name="status"><option value="">Any status</option>
             @foreach(['pending', 'processing', 'completed', 'failed'] as $s)<option value="{{ $s }}" @selected(request('status') === $s)>{{ ucfirst($s) }}</option>@endforeach</select></div>
         <div class="col-md-4 col-lg-2"><select class="form-select" name="department_id"><option value="">All departments</option>

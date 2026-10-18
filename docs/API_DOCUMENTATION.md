@@ -42,7 +42,7 @@ Admin: `users`, `departments`, `organizations` (resource routes), `GET /audit-lo
 Required permission per route is declared in `routes/web.php`; row-level checks in policies.
 
 ## Role–permission matrix
-(authoritative copy: `config/govdoc.php`)
+(authoritative copy: `config/nexora.php`)
 
 | Permission | Super Admin | Org Admin | Dept Admin | Officer | Reviewer | Viewer |
 |---|:-:|:-:|:-:|:-:|:-:|:-:|

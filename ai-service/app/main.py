@@ -16,7 +16,7 @@ from .security import require_service_token
 from .store import VectorStore
 
 logging.basicConfig(level=logging.INFO)
-log = logging.getLogger("govdoc.ai")
+log = logging.getLogger("nexora.ai")
 app = FastAPI(title="Nexora AI Service", version="0.1.0")
 store = VectorStore(get_embedder())
 auth = [Depends(require_service_token)]
