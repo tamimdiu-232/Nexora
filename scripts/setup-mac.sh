@@ -62,6 +62,10 @@ MYSQL_ARGS=(-h 127.0.0.1 -uroot)
 [ -n "${MYSQL_ROOT_PASSWORD:-}" ] && MYSQL_ARGS+=("-p${MYSQL_ROOT_PASSWORD}")
 mysql "${MYSQL_ARGS[@]}" -e "CREATE DATABASE IF NOT EXISTS nexora CHARACTER SET utf8mb4 COLLATE utf8mb4_unicode_ci; CREATE USER IF NOT EXISTS 'nexora'@'localhost' IDENTIFIED BY 'nexora_dev_pass'; CREATE USER IF NOT EXISTS 'nexora'@'127.0.0.1' IDENTIFIED BY 'nexora_dev_pass'; GRANT ALL PRIVILEGES ON nexora.* TO 'nexora'@'localhost'; GRANT ALL PRIVILEGES ON nexora.* TO 'nexora'@'127.0.0.1'; FLUSH PRIVILEGES;" \
   || die "Could not create the database user. Start MySQL in XAMPP; if root has a password run: MYSQL_ROOT_PASSWORD=yourpassword bash scripts/setup-mac.sh"
+# The mysql command-line client and Laravel can end up on different MySQL ports (XAMPP vs another install).
+# Ask the server the client actually reached which port it listens on, and give Laravel the same one.
+DB_PORT_DETECTED="$(mysql "${MYSQL_ARGS[@]}" -N -e "SELECT @@port" 2>/dev/null || true)"
+[ -n "$DB_PORT_DETECTED" ] && set_env .env DB_PORT "$DB_PORT_DETECTED" && echo "MySQL port detected: $DB_PORT_DETECTED"
 set_env .env DB_USERNAME nexora
 set_env .env DB_PASSWORD nexora_dev_pass
 php artisan migrate --seed --force
