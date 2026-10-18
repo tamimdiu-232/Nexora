@@ -4,13 +4,14 @@ untrusted: instruction-like lines are dropped before use."""
 import re
 from . import llm
 from .config import settings
+from .textutil import stem
 
 WORD = re.compile(r"[\w\u0980-\u09FF]+")  # \w alone splits Bengali words at vowel signs
 INJECTION = re.compile(
     r"(ignore (all |any )?(previous|prior|above) (instructions|rules)|disregard .{0,30}instructions|"
     r"system prompt|you are now|reveal .{0,30}(secret|prompt|password))", re.I)
 AMOUNT = re.compile(r"(?:BDT|Tk\.?|৳)\s?[\d,]+(?:\.\d+)?(?:\s?(?:crore|lakh|million))?", re.I)
-STOP = set("the a an of is are what when how much was for and to in on this that does do which who there কত কবে এই এবং এর কি কী".split())
+STOP = set("the a an of is are what when how much was for and to in on this that does do which who there কত কবে এই এবং এর কি কী শেষ কোন কোনো জন্য থেকে আছে হবে হয় ও".split())
 NO_EVIDENCE = {"answer": "I could not find sufficient evidence in the documents you can access to answer this.",
                "status": "insufficient_evidence", "citations": [], "conflicts": []}
 
@@ -30,8 +31,7 @@ Q_DEADLINE = re.compile(r"deadline|due|when|date|কবে|কখন", re.I)
 S_DEADLINE = re.compile(r"deadline|due|complet|submit|by ", re.I)
 
 
-def _stem(w: str) -> str:
-    return re.sub(r"(ing|ed|es|s)$", "", w) if len(w) > 4 else w
+_stem = stem
 
 
 def _stems(text: str) -> set:
@@ -119,12 +119,12 @@ def _withheld(reason: str) -> dict:
             "status": "insufficient_evidence", "citations": [], "conflicts": [], "warning": reason}
 
 
-def generate_answer(question: str, hits: list) -> dict:
+def generate_answer(question: str, hits: list, retrieval_question: str | None = None) -> dict:
     """Uses the configured LLM when available, otherwise the extractive baseline. Every LLM answer is verified:
     citation markers must exist, and amounts/dates must appear in the cited passages."""
     provider, warning = llm.get_provider()
     if provider is None:
-        res = answer(question, hits)
+        res = answer(retrieval_question or question, hits)
         if warning:
             res["warning"] = warning
         return res
@@ -135,7 +135,7 @@ def generate_answer(question: str, hits: list) -> dict:
     try:
         raw = provider.generate(llm.SYSTEM_PROMPT, llm.build_prompt(question, passages)).strip()
     except llm.LLMError as e:
-        res = answer(question, hits)
+        res = answer(retrieval_question or question, hits)
         res["warning"] = f"LLM call failed ({e}); extractive baseline used."
         return res
     if "INSUFFICIENT_EVIDENCE" in raw:

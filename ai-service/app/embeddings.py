@@ -2,6 +2,7 @@
 swap in a sentence-transformer by implementing the same `embed` method."""
 import hashlib, re
 import numpy as np
+from .textutil import stem
 
 DIM = 512
 _tok = re.compile(r"[\w\u0980-\u09FF]+")  # include Bengali vowel signs
@@ -13,7 +14,7 @@ class HashEmbedder:
     def embed(self, texts: list[str]) -> np.ndarray:
         m = np.zeros((len(texts), DIM), dtype=np.float32)
         for i, t in enumerate(texts):
-            words = [w.lower() for w in _tok.findall(t)]
+            words = [stem(w.lower()) for w in _tok.findall(t)]
             for w in words:
                 m[i, int(hashlib.md5(w.encode()).hexdigest(), 16) % DIM] += 1.0
             for a, b in zip(words, words[1:]):

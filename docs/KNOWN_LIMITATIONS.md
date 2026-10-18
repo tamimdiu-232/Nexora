@@ -18,3 +18,7 @@
 
 ## Future improvements
 Real LLM provider with citation-constrained prompting; sentence-transformer or multilingual embeddings (e.g. a multilingual E5/BGE model) and a persistent vector store (e.g. pgvector/Qdrant/FAISS); labeled Bangla/English evaluation set; async queue with progress; document versioning; stronger auth (MFA, SSO); containerized deployment behind HTTPS.
+
+16. Bangla support is a small built-in glossary (about 50 common government terms) used to translate *questions* for retrieval; documents are not translated. Words outside the glossary only match documents written in Bangla themselves. A multilingual embedding model is the proper fix.
+17. Super Admin cannot access organization content and there is no emergency "break-glass" access in this version. Additional Super Admins must be created by seeding/database (the UI creates only Organization Admins).
+18. The UI was redesigned without being viewed in a browser by the author; expect cosmetic fixes after the first run. Bootstrap, Bootstrap Icons and the Inter font load from CDNs (internet needed).

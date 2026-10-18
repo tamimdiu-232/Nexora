@@ -1,6 +1,14 @@
 # Security
 
-**This is an academic prototype. It has had no independent security assessment and must not be called production-grade.**
+**This software has had no independent security assessment and must not be called production-grade.**
+
+## Platform administration is separated from organization content
+- The Super Admin role has no `documents.*`, `search.use`, `chat.use` or `reviews.*` permission, and the document visibility rule returns "not visible" for Super Admins, so policies, scoped queries and AI retrieval all exclude them (tested in `PlatformAdminTest`). There is no "break-glass" override in this version.
+- Super Admin pages show counts, health and error codes only. The error-log viewer keeps just the first line of each ERROR entry, removes SQL details and e-mail addresses, and hides stack traces.
+- Audit entries never copy document titles or text (deleting a document logs its id only).
+- Security-sensitive platform actions are audited: organization changes, Organization Admin creation, reset links, forced sign-out, (de)activation, incident create/update.
+- Account recovery cannot target your own account; recovery routes are Super Admin only.
+- Limits: a Super Admin can still deactivate an organization (that is the incident-response lever) and can see which organization has how many documents. Anyone with direct database or server access can of course still read data.
 
 ## Controls implemented (in code)
 - Password hashing (bcrypt via Laravel `hashed` cast), session regeneration on login, CSRF on all forms, login throttling (5 attempts/min per email+IP) and route rate limits, deactivated users logged out on next request.

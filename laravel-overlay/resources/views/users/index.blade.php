@@ -1,15 +1,28 @@
 @extends('layouts.app')
-@section('title', 'Users')
+@section('title', auth()->user()->isSuper() ? 'Organization admins' : 'Users')
 @section('content')
-<div class="d-flex justify-content-between mb-3"><h3 class="mb-0">Users</h3><a class="btn btn-primary" href="{{ route('users.create') }}">Add user</a></div>
-<form class="mb-3" method="GET"><div class="input-group"><input class="form-control" name="q" value="{{ request('q') }}" placeholder="Name or email"><button class="btn btn-outline-secondary">Search</button></div></form>
-<div class="card"><div class="table-responsive"><table class="table mb-0 align-middle">
-<thead><tr><th>Name</th><th>Email</th><th>Role</th><th>Organization</th><th>Department</th><th>Status</th><th></th></tr></thead><tbody>
-@forelse($users as $u)
-<tr><td>{{ $u->name }}</td><td>{{ $u->email }}</td><td>{{ $u->roleLabel() }}</td><td>{{ $u->organization?->name ?? '-' }}</td><td>{{ $u->department?->name ?? '-' }}</td>
-<td>@if($u->is_active)<span class="badge bg-success">Active</span>@else<span class="badge bg-secondary">Inactive</span>@endif</td>
-<td>@can('update', $u)<a class="btn btn-sm btn-outline-primary" href="{{ route('users.edit', $u) }}">Edit</a>@endcan</td></tr>
-@empty<tr><td colspan="7" class="text-center text-muted py-3">No users.</td></tr>@endforelse
-</tbody></table></div></div>
+<x-page-header :title="auth()->user()->isSuper() ? 'Organization admins' : 'Users'" subtitle="Create accounts and control who can do what.">
+    <a class="btn btn-primary" href="{{ route('users.create') }}"><i class="bi bi-person-plus me-1"></i> Add {{ auth()->user()->isSuper() ? 'organization admin' : 'user' }}</a>
+</x-page-header>
+<form class="mb-3" method="GET"><div class="input-group"><input class="form-control" name="q" value="{{ request('q') }}" placeholder="Search name or email"><button class="btn btn-ghost">Search</button></div></form>
+<div class="nx-card">
+    @if($users->isEmpty())
+        <x-empty icon="bi-people" title="No accounts yet">Use “Add” to create the first one.</x-empty>
+    @else
+    <div class="table-responsive"><table class="nx-table">
+        <thead><tr><th>Name</th><th>Role</th><th>Organization</th><th>Department</th><th>Status</th><th></th></tr></thead>
+        <tbody>
+        @foreach($users as $u)
+            <tr>
+                <td><div class="title">{{ $u->name }}</div><div class="small text-muted">{{ $u->email }}</div></td>
+                <td>{{ $u->roleLabel() }}</td><td>{{ $u->organization?->name ?? '-' }}</td><td>{{ $u->department?->name ?? '-' }}</td>
+                <td><x-status :status="$u->is_active ? 'active' : 'inactive'" /></td>
+                <td class="text-end">@can('update', $u)<a class="btn btn-ghost btn-sm" href="{{ route('users.edit', $u) }}">Edit</a>@endcan</td>
+            </tr>
+        @endforeach
+        </tbody>
+    </table></div>
+    @endif
+</div>
 <div class="mt-3">{{ $users->links('pagination::bootstrap-5') }}</div>
 @endsection

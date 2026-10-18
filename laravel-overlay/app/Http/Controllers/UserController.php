@@ -64,7 +64,7 @@ class UserController extends Controller
     {
         return ['user' => $user, 'roles' => collect(config('govdoc.roles'))->only($actor->assignableRoles()),
             'organizations' => $actor->isSuper() ? Organization::orderBy('name')->get() : collect(),
-            'departments' => $actor->isSuper() ? Department::with('organization')->orderBy('name')->get()
+            'departments' => $actor->isSuper() ? collect()
                 : Department::where('organization_id', $actor->organization_id)
                     ->when($actor->isDeptAdmin(), fn ($q) => $q->where('id', $actor->department_id))->get()];
     }
@@ -84,8 +84,8 @@ class UserController extends Controller
 
         $orgId = $actor->isSuper() ? ($v['organization_id'] ?? null) : $actor->organization_id;
         $deptId = $actor->isDeptAdmin() ? $actor->department_id : ($v['department_id'] ?? null);
-        if ($v['role'] === 'super_admin') { $orgId = null; $deptId = null; }
-        elseif (!$orgId) throw ValidationException::withMessages(['organization_id' => 'Select an organization.']);
+        if ($actor->isSuper()) $deptId = null; // Organization Admins are organization-wide
+        if (!$orgId) throw ValidationException::withMessages(['organization_id' => 'Select an organization.']);
         if ($deptId && !Department::where('id', $deptId)->where('organization_id', $orgId)->exists()) {
             throw ValidationException::withMessages(['department_id' => 'Department does not belong to the organization.']);
         }

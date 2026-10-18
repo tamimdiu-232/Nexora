@@ -1,5 +1,6 @@
 <?php
 
+use App\Http\Controllers\AccountRecoveryController;
 use App\Http\Controllers\AuditLogController;
 use App\Http\Controllers\AuthController;
 use App\Http\Controllers\ChatController;
@@ -13,6 +14,8 @@ use App\Http\Controllers\PasswordResetController;
 use App\Http\Controllers\ProfileController;
 use App\Http\Controllers\ReviewController;
 use App\Http\Controllers\SearchController;
+use App\Http\Controllers\SecurityIncidentController;
+use App\Http\Controllers\SystemHealthController;
 use App\Http\Controllers\UserController;
 use App\Http\Middleware\EnsureUserIsActive;
 use App\Http\Middleware\RequirePermission as Perm;
@@ -78,6 +81,17 @@ Route::middleware(['auth', EnsureUserIsActive::class, 'throttle:120,1'])->group(
     });
     Route::middleware(Perm::class . ':organizations.manage')->group(function () {
         Route::resource('organizations', OrganizationController::class)->except(['show', 'destroy']);
+    });
+    // Platform operations (Super Admin only): system health, account recovery, security incidents.
+    Route::get('/admin/system', [SystemHealthController::class, 'index'])->name('admin.system')->middleware(Perm::class . ':system.view');
+    Route::middleware(Perm::class . ':security.manage')->prefix('admin')->group(function () {
+        Route::get('/accounts', [AccountRecoveryController::class, 'index'])->name('admin.accounts');
+        Route::post('/accounts/{user}/reset-link', [AccountRecoveryController::class, 'sendResetLink'])->name('admin.accounts.reset-link')->middleware('throttle:20,1');
+        Route::post('/accounts/{user}/revoke-sessions', [AccountRecoveryController::class, 'revokeSessions'])->name('admin.accounts.revoke');
+        Route::post('/accounts/{user}/toggle-active', [AccountRecoveryController::class, 'toggleActive'])->name('admin.accounts.toggle');
+        Route::get('/incidents', [SecurityIncidentController::class, 'index'])->name('admin.incidents');
+        Route::post('/incidents', [SecurityIncidentController::class, 'store'])->name('admin.incidents.store');
+        Route::put('/incidents/{incident}', [SecurityIncidentController::class, 'update'])->name('admin.incidents.update');
     });
     Route::get('/audit-logs', [AuditLogController::class, 'index'])->name('audit.index')->middleware(Perm::class . ':audit.view');
 });

@@ -24,7 +24,6 @@ class StoreDocumentRequest extends FormRequest
             'description' => ['nullable', 'string', 'max:5000'],
             'category' => ['nullable', Rule::in(config('govdoc.categories'))],
             'tags' => ['nullable', 'string', 'max:255'],
-            'organization_id' => ['nullable', 'integer', 'exists:organizations,id'],
             'department_id' => ['nullable', 'integer', 'exists:departments,id'],
         ];
     }

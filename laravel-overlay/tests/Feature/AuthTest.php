@@ -9,7 +9,7 @@ class AuthTest extends TestCase
 {
     public function test_guests_are_redirected_from_every_protected_route(): void
     {
-        foreach (['/dashboard', '/documents', '/documents/create', '/search', '/chat', '/reviews', '/users', '/departments', '/organizations', '/audit-logs', '/profile'] as $url) {
+        foreach (['/dashboard', '/documents', '/documents/create', '/search', '/chat', '/reviews', '/users', '/departments', '/organizations', '/audit-logs', '/profile', '/admin/system', '/admin/accounts', '/admin/incidents'] as $url) {
             $this->get($url)->assertRedirect('/login');
         }
         $this->post('/documents')->assertRedirect('/login');

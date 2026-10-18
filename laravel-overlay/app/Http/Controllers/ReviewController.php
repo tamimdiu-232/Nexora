@@ -17,7 +17,7 @@ class ReviewController extends Controller
         $u = $request->user();
         $status = $request->input('status', 'pending');
         $reviews = Review::with(['message.citations.document', 'requester', 'reviewer'])
-            ->whereHas('requester', fn ($q) => $u->isSuper() ? $q : $q->where('organization_id', $u->organization_id))
+            ->whereHas('requester', fn ($q) => $q->where('organization_id', $u->organization_id))
             ->when($status !== 'all', fn ($q) => $q->where('status', $status))
             ->latest()->paginate(10)->withQueryString();
 

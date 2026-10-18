@@ -12,6 +12,7 @@ Preparation: setup done, both servers running, `php artisan govdoc:process` comp
 8. Log in as **viewer.finance@demo-a.test**: Planning-department documents are absent from lists, search and answers; open a Planning document URL directly → **Access denied**.
 9. Log in as **orgadmin@demo-b.test**: ask about the Riverside project → insufficient evidence (Org A documents are invisible); asking about road maintenance works.
 10. Log in as **orgadmin@demo-a.test** → Audit log: uploads, previews, chat events, review decision.
-11. Show the failed corrupted document and **Retry processing**; show the scanned notice (OCR) page text via keyword search "closed".
+11. Log in as **super@govdoc.test**: show the Platform overview, System health, Account recovery and Security incidents pages, then open /documents or /search directly: **Access denied**. Explain that platform admins run the system but never see organization content.
+12. Show the failed corrupted document and **Retry processing**; show the scanned notice (OCR) page text via keyword search "closed".
 
 Talking points: architecture (docs/ARCHITECTURE.md), permission-filtered retrieval, double citation validation, human-in-the-loop, honesty about limits (docs/KNOWN_LIMITATIONS.md).

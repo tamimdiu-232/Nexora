@@ -4,6 +4,7 @@ from pydantic import BaseModel, Field
 from .chunking import chunk_pages
 from .classify import classify
 from .info import extract_info
+from .lexicon import translate
 from .summarize import summarize
 from .config import settings
 from .embeddings import get_embedder
@@ -16,7 +17,7 @@ from .store import VectorStore
 
 logging.basicConfig(level=logging.INFO)
 log = logging.getLogger("govdoc.ai")
-app = FastAPI(title="GovDoc BD AI Service", version="0.1.0")
+app = FastAPI(title="Nexora AI Service", version="0.1.0")
 store = VectorStore(get_embedder())
 auth = [Depends(require_service_token)]
 
@@ -77,7 +78,7 @@ def remove(document_id: str):
 
 @app.post("/v1/search", dependencies=auth)
 def search(q: QueryIn):
-    hits = store.search(q.question, q.authorized_document_ids, q.top_k)
+    hits = store.search(translate(q.question), q.authorized_document_ids, q.top_k)
     return {"results": [{"document_id": c.document_id, "chunk_id": c.chunk_id, "page": c.page,
                          "title": m.get("title"), "snippet": c.text[:300], "score": round(s, 3)} for s, c, m in hits]}
 
@@ -85,7 +86,8 @@ def search(q: QueryIn):
 @app.post("/v1/qa", dependencies=auth)
 def qa(q: QueryIn):
     ids = set(q.authorized_document_ids)
-    res = generate_answer(q.question, store.search(q.question, list(ids), q.top_k))
+    eq = translate(q.question)  # Bangla glossary terms -> English, for retrieval only
+    res = generate_answer(q.question, store.search(eq, list(ids), q.top_k), eq)
     res["citations"] = validate_citations(store, ids, res["citations"])
     if not res["citations"] and res["status"] != "insufficient_evidence":
         res.update(status="insufficient_evidence", answer="No valid, authorized source could be confirmed.")

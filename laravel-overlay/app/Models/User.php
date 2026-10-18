@@ -42,7 +42,7 @@ class User extends Authenticatable
     {
         $all = array_keys(config('govdoc.roles'));
         return match ($this->role) {
-            'super_admin' => $all,
+            'super_admin' => ['org_admin'], // platform admins only create Organization Admins; they run everything else themselves
             'org_admin' => array_values(array_diff($all, ['super_admin'])),
             'dept_admin' => ['officer', 'reviewer', 'viewer'],
             default => [],
@@ -52,7 +52,7 @@ class User extends Authenticatable
     /** Users this actor is allowed to administer (scoped query). */
     public function scopeManageableBy(Builder $q, User $actor): Builder
     {
-        if ($actor->isSuper()) return $q;
+        if ($actor->isSuper()) return $q->where('role', 'org_admin');
         if ($actor->isOrgAdmin()) return $q->where('organization_id', $actor->organization_id)->where('role', '!=', 'super_admin');
         if ($actor->isDeptAdmin()) return $q->where('department_id', $actor->department_id)->whereIn('role', ['officer', 'reviewer', 'viewer']);
         return $q->whereRaw('1 = 0');

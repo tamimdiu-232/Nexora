@@ -57,8 +57,9 @@ class SearchController extends Controller
 
         return view('search.index', [
             'q' => $q, 'mode' => $mode, 'results' => $results, 'semantic' => $semantic, 'error' => $error,
-            'departments' => $u->isSuper() ? Department::orderBy('name')->get() : ($u->isOrgAdmin()
-                ? Department::where('organization_id', $u->organization_id)->get() : Department::where('id', $u->department_id)->get()),
+            'departments' => $u->isOrgAdmin()
+                ? Department::where('organization_id', $u->organization_id)->get()
+                : Department::where('id', $u->department_id)->get(),
         ]);
     }
 

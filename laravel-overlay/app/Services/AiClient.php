@@ -41,6 +41,11 @@ class AiClient
         return $this->send(fn () => $this->http(3)->get('/health'));
     }
 
+    public function indexHealth(): array
+    {
+        return $this->send(fn () => $this->http(5)->get('/v1/index/health'));
+    }
+
     public function process(string $uuid, string $title, string $absolutePath): array
     {
         return $this->send(fn () => $this->http()->attach('file', file_get_contents($absolutePath), 'document.pdf')

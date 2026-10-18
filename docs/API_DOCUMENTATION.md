@@ -44,17 +44,23 @@ Required permission per route is declared in `routes/web.php`; row-level checks 
 ## Role–permission matrix
 (authoritative copy: `config/govdoc.php`)
 
-| Permission | Super | Org Admin | Dept Admin | Officer | Reviewer | Viewer |
+| Permission | Super Admin | Org Admin | Dept Admin | Officer | Reviewer | Viewer |
 |---|:-:|:-:|:-:|:-:|:-:|:-:|
-| dashboard.view, documents.view, search.use, chat.use | ✔ | ✔ | ✔ | ✔ | ✔ | ✔ |
-| documents.upload | ✔ | ✔ | ✔ | ✔ | | |
-| documents.edit / reprocess | ✔ | ✔ (all in org) | ✔ (own dept) | ✔ (own uploads) | | |
-| documents.delete | ✔ | ✔ | ✔ (own dept) | | | |
-| reviews.submit | ✔ | ✔ | ✔ | ✔ | ✔ | |
-| reviews.view | ✔ | ✔ | ✔ | | ✔ | |
-| reviews.decide | ✔ | | | | ✔ (not own submissions) | |
-| users.manage | ✔ | ✔ (org) | ✔ (dept, roles officer/reviewer/viewer) | | | |
-| departments.manage | ✔ | ✔ (own org) | | | | |
+| dashboard.view | ✔ (platform overview) | ✔ | ✔ | ✔ | ✔ | ✔ |
+| documents.view, search.use, chat.use | ✘ | ✔ | ✔ | ✔ | ✔ | ✔ |
+| documents.upload | ✘ | ✔ | ✔ | ✔ | | |
+| documents.edit / reprocess | ✘ | ✔ (all in org) | ✔ (own dept) | ✔ (own uploads) | | |
+| documents.delete | ✘ | ✔ | ✔ (own dept) | | | |
+| reviews.submit | ✘ | ✔ | ✔ | ✔ | ✔ | |
+| reviews.view | ✘ | ✔ | ✔ | | ✔ | |
+| reviews.decide | ✘ | | | | ✔ (not own submissions) | |
+| users.manage | ✔ (Organization Admins only) | ✔ (org) | ✔ (dept; officer/reviewer/viewer) | | | |
+| departments.manage | ✘ | ✔ (own org) | | | | |
 | organizations.manage | ✔ | | | | | |
-| audit.view | ✔ (all) | ✔ (org) | | | | |
-Visibility: Super sees all; others see their organization; department-scoped documents only to that department and Org Admins.
+| system.view (health, queues, error log) | ✔ | | | | | |
+| security.manage (incidents, account recovery) | ✔ | | | | | |
+| audit.view | ✔ (all organizations) | ✔ (own org) | | | | |
+
+Visibility: organization users see their organization; department-scoped documents only to that department and Organization Admins. **Super Admin sees no documents, search results or AI chats** (`Document::isVisibleTo` returns false and `scopeVisibleTo` matches nothing for Super Admins).
+
+Platform routes: `GET /admin/system`, `GET /admin/accounts`, `POST /admin/accounts/{user}/reset-link|revoke-sessions|toggle-active`, `GET/POST /admin/incidents`, `PUT /admin/incidents/{id}`.

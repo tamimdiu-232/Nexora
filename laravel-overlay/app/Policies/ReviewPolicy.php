@@ -9,7 +9,7 @@ class ReviewPolicy
 {
     private function sameScope(User $u, Review $r): bool
     {
-        return $u->isSuper() || ($u->organization_id !== null && $r->requester->organization_id === $u->organization_id);
+        return $u->organization_id !== null && $r->requester->organization_id === $u->organization_id;
     }
 
     public function view(User $u, Review $r): bool { return $u->hasPermission('reviews.view') && $this->sameScope($u, $r); }

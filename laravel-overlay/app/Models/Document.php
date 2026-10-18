@@ -37,7 +37,7 @@ class Document extends Model
     /** Organization / department / role visibility rule - the single source of truth. */
     public function isVisibleTo(User $u): bool
     {
-        if ($u->isSuper()) return true;
+        if ($u->isSuper()) return false; // platform admins never see organization content
         if ($u->organization_id === null || $u->organization_id !== $this->organization_id) return false;
         if ($this->department_id === null || $u->isOrgAdmin()) return true;
         return $u->department_id === $this->department_id;
@@ -46,8 +46,7 @@ class Document extends Model
     /** Same rule expressed as a scoped query. Apply BEFORE search, retrieval or listing. */
     public function scopeVisibleTo(Builder $q, User $u): Builder
     {
-        if ($u->isSuper()) return $q;
-        if ($u->organization_id === null) return $q->whereRaw('1 = 0');
+        if ($u->isSuper() || $u->organization_id === null) return $q->whereRaw('1 = 0');
         $q->where('documents.organization_id', $u->organization_id);
         if (!$u->isOrgAdmin()) {
             $q->where(function ($w) use ($u) {
@@ -66,7 +65,7 @@ class Document extends Model
     {
         if (!$this->isVisibleTo($u)) return false;
         return match ($u->role) {
-            'super_admin', 'org_admin' => true,
+            'org_admin' => true,
             'dept_admin' => $this->department_id !== null && $this->department_id === $u->department_id,
             'officer' => $this->uploaded_by === $u->id,
             default => false,

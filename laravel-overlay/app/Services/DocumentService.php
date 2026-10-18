@@ -14,20 +14,18 @@ use Illuminate\Validation\ValidationException;
 class DocumentService
 {
     /**
-     * Decide which organization/department a new document belongs to - server-side, never trusted from the form.
+     * Decide which organization/department a new document belongs to - on the server, never trusted from the form.
+     * Organization Admins may pick any department of their organization; everyone else uploads into their own department.
      * @return array{0:int,1:?int}
      */
-    public function resolveScope(User $user, ?int $orgId, ?int $deptId): array
+    public function resolveScope(User $user, ?int $deptId): array
     {
-        if ($user->isSuper()) {
-            if (!$orgId) throw ValidationException::withMessages(['organization_id' => 'Select an organization.']);
-        } else {
-            $orgId = $user->organization_id;
-            if (!$orgId) throw ValidationException::withMessages(['organization_id' => 'Your account has no organization.']);
-            if (!$user->isOrgAdmin()) {
-                if (!$user->department_id) throw ValidationException::withMessages(['department_id' => 'Your account has no department.']);
-                $deptId = $user->department_id; // officers and department admins can only upload into their own department
-            }
+        $orgId = $user->organization_id;
+        if (!$orgId) throw ValidationException::withMessages(['department_id' => 'Your account has no organization.']);
+
+        if (!$user->isOrgAdmin()) {
+            if (!$user->department_id) throw ValidationException::withMessages(['department_id' => 'Your account has no department.']);
+            $deptId = $user->department_id;
         }
         if ($deptId && !Department::where('id', $deptId)->where('organization_id', $orgId)->exists()) {
             throw ValidationException::withMessages(['department_id' => 'Invalid department for this organization.']);

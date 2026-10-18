@@ -1,10 +1,10 @@
-# GovDoc BD — Progress tracker
+# Nexora — Progress tracker
 
 Legend: Tested = automated test passed. **Implemented (unrun)** = code exists and is syntax-checked but was never executed (the build sandbox had no Composer/Packagist/MySQL). Not Started / Blocked as stated.
 
 | Module | Status | Notes |
 |---|---|---|
-| AI service: health, service-token auth, limits | Tested | 39 tests |
+| AI service: health, service-token auth, limits | Tested | 45 tests |
 | PDF extraction, page boundaries | Tested | |
 | OCR (Tesseract) | Tested | English synthetic scan only |
 | Corrupt/non-PDF handling | Tested | password-protected and oversize paths untested |
@@ -23,7 +23,7 @@ Legend: Tested = automated test passed. **Implemented (unrun)** = code exists an
 | Laravel: search, chat, citations, summaries, related | Implemented (unrun) | |
 | Laravel: review workflow, audit log, dashboard | Implemented (unrun) | |
 | Blade UI (all listed pages, errors) | Implemented (unrun) | |
-| Laravel feature tests (61) + real-AI integration test (3) | Written, not run | `scripts/run-tests.sh`, `scripts/integration-test.sh` |
+| Laravel feature tests (72) + real-AI integration test (3) | Written, not run | `scripts/run-tests.sh`, `scripts/integration-test.sh` |
 | LLM provider layer (anthropic/openai-compatible) with verification | Tested with fakes/mocks only | never run against a real LLM |
 | Model-assisted extraction (evidence-checked) | Tested with fakes only | |
 | Laravel↔FastAPI contract test | Tested | real sample PDFs |
@@ -35,3 +35,7 @@ Legend: Tested = automated test passed. **Implemented (unrun)** = code exists an
 | Synthetic demo data + seeder | Implemented | PDFs generated and processed by the AI service; seeder unrun |
 | Docs | Implemented | reflect real status |
 | Real-document accuracy evaluation | Not Started | needs labeled data |
+
+| Nexora rebrand + redesigned UI (design system, sidebar layout, components) | Implemented (unrun) | `public/css/nexora.css`; never viewed in a browser |
+| Restricted Super Admin (no organization content) + system health, account recovery, security incidents | Implemented (unrun) | `PlatformAdminTest` written, not run |
+| Bangla glossary retrieval + embedder stemming | Tested | pure-Bangla questions over English documents |

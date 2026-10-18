@@ -1,7 +1,7 @@
 # Final acceptance checklist
 
 Legend: ✅ verified by a test that was actually run · 🟡 code written and syntax-checked but **never executed** (needs your Mac run) · ⚠️ partial/baseline · ❌ not done.
-Verified = the 39 AI-service tests and a live uvicorn smoke test, run in the build sandbox. Nothing in Laravel has been executed.
+Verified = the 45 AI-service tests and a live uvicorn smoke test, run in the build sandbox. Nothing in Laravel has been executed.
 
 | Definition-of-complete item | Status | Evidence / what to do |
 |---|---|---|
@@ -25,7 +25,7 @@ Verified = the 39 AI-service tests and a live uvicorn smoke test, run in the bui
 | Summarization | ✅ (extractive baseline) | no LLM summaries |
 | Reviewers can verify AI results | 🟡 | `ReviewAndAiTest` (written) |
 | Audit records generated | 🟡 | tests written |
-| Core automated tests pass | ✅ AI (39/39) · 🟡 Laravel (61 written, 0 run) · 🟡 real Laravel↔FastAPI test (`scripts/integration-test.sh`) | |
+| Core automated tests pass | ✅ AI (45/45) · 🟡 Laravel (72 written, 0 run) · 🟡 real Laravel↔FastAPI test (`scripts/integration-test.sh`) | |
 | Synthetic demo data works end to end | ⚠️ | AI side verified on all 9 PDFs; seeder + UI flow not run |
 | Documentation reflects the actual system | ✅ | docs state which parts are unrun |
 | Known limitations disclosed | ✅ | `KNOWN_LIMITATIONS.md` |

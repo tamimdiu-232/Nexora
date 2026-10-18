@@ -12,6 +12,6 @@ class DepartmentPolicy
 
     public function update(User $u, Department $d): bool
     {
-        return $u->hasPermission('departments.manage') && ($u->isSuper() || $u->organization_id === $d->organization_id);
+        return $u->hasPermission('departments.manage') && $u->organization_id === $d->organization_id;
     }
 }

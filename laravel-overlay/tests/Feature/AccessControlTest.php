@@ -137,12 +137,12 @@ class AccessControlTest extends TestCase
         $this->actingAs($this->user('org_admin', $a))->put('/departments/' . $dep->id, ['name' => 'Renamed'])->assertForbidden();
     }
 
-    public function test_role_change_by_super_admin_is_audited(): void
+    public function test_role_change_by_org_admin_is_audited(): void
     {
         $org = $this->org(); $d = $this->dept($org);
-        $super = $this->user('super_admin'); $target = $this->user('viewer', $org, $d);
-        $this->actingAs($super)->put('/users/' . $target->id, ['name' => $target->name, 'email' => $target->email,
-            'role' => 'reviewer', 'organization_id' => $org->id, 'department_id' => $d->id, 'is_active' => 1])->assertRedirect('/users');
+        $admin = $this->user('org_admin', $org); $target = $this->user('viewer', $org, $d);
+        $this->actingAs($admin)->put('/users/' . $target->id, ['name' => $target->name, 'email' => $target->email,
+            'role' => 'reviewer', 'department_id' => $d->id, 'is_active' => 1])->assertRedirect('/users');
         $this->assertSame('reviewer', $target->fresh()->role);
         $this->assertDatabaseHas('audit_logs', ['action' => 'user.role_changed', 'subject_id' => $target->id]);
     }

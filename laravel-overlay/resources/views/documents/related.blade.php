@@ -1,18 +1,22 @@
 @extends('layouts.app')
 @section('title', 'Related documents')
 @section('content')
-<h3>Related to: <a href="{{ route('documents.show', $document) }}">{{ $document->title }}</a></h3>
-<p class="text-muted">Based on semantic similarity and shared terms, limited to documents you are allowed to see. Similarity is a heuristic, not proof of a relationship.</p>
-@if($error)<div class="alert alert-danger">{{ $error }}</div>@endif
-@if($document->processing_status !== 'completed')<div class="alert alert-info">This document is not processed yet.</div>@endif
-@forelse($items as $r)
-<div class="card mb-2"><div class="card-body">
-    <a href="{{ route('documents.show', $r['doc']) }}" class="fs-5">{{ $r['doc']->title }}</a>
-    <span class="badge bg-light text-dark border">{{ $r['doc']->category }}</span> <span class="badge bg-secondary">similarity {{ $r['score'] }}</span>
-    @if(!empty($r['explanation']))<div class="small text-muted">{{ $r['explanation'] }}</div>@endif
-    <div class="small mt-1">{{ $r['snippet'] ?? '' }}</div>
-</div></div>
-@empty
-@if(!$error && $document->processing_status === 'completed')<div class="text-muted">No related documents found.</div>@endif
-@endforelse
+<x-page-header title="Related documents" :subtitle="$document->title">
+    <a class="btn btn-ghost" href="{{ route('documents.show', $document) }}"><i class="bi bi-arrow-left me-1"></i> Back to document</a>
+</x-page-header>
+<p class="text-muted small">Based on similar content and shared terms, limited to documents you can access. Similarity is a hint, not proof of a relationship.</p>
+@if($error)<div class="alert alert-danger"><i class="bi bi-exclamation-triangle-fill"></i><div>{{ $error }}</div></div>@endif
+@if($document->processing_status !== 'completed')<div class="alert alert-info"><i class="bi bi-info-circle-fill"></i><div>This document has not been processed yet.</div></div>@endif
+<div class="nx-card">
+    @forelse($items as $item)
+        <div class="nx-result">
+            <a class="fw-semibold" href="{{ route('documents.show', $item['doc']) }}">{{ $item['doc']->title }}</a>
+            <span class="nx-tag ms-1">{{ $item['doc']->category }}</span> <span class="nx-pill ms-1">similarity {{ $item['score'] }}</span>
+            @if(!empty($item['explanation']))<div class="small text-muted mt-1">{{ $item['explanation'] }}</div>@endif
+            <div class="nx-quote">{{ $item['snippet'] ?? '' }}</div>
+        </div>
+    @empty
+        @if(!$error && $document->processing_status === 'completed')<x-empty icon="bi-diagram-2" title="No related documents">Nothing similar was found among your documents.</x-empty>@endif
+    @endforelse
+</div>
 @endsection

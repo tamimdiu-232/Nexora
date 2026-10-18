@@ -33,7 +33,7 @@ else
   echo "laravel-app already exists - reusing it"
 fi
 
-say "2/5 Copying GovDoc BD application code into laravel-app"
+say "2/5 Copying Nexora application code into laravel-app"
 rsync -a laravel-overlay/ laravel-app/
 rm -f laravel-app/tests/Feature/ExampleTest.php laravel-app/tests/Unit/ExampleTest.php
 
@@ -41,7 +41,7 @@ say "3/5 Configuring .env"
 cd laravel-app
 [ -f .env ] || cp .env.example .env
 TOKEN="$(php -r 'echo bin2hex(random_bytes(24));')"
-set_env .env APP_NAME GovDocBD
+set_env .env APP_NAME Nexora
 set_env .env DB_CONNECTION mysql
 set_env .env DB_HOST 127.0.0.1
 set_env .env DB_PORT 3306

@@ -1,11 +1,23 @@
 @extends('layouts.app')
 @section('title', 'Audit log')
 @section('content')
-<h3>Audit log</h3>
-<form class="mb-3" method="GET"><div class="input-group"><input class="form-control" name="action" value="{{ request('action') }}" placeholder="Action prefix, e.g. document. or review."><button class="btn btn-outline-secondary">Filter</button></div></form>
-<div class="card"><div class="table-responsive"><table class="table table-sm mb-0"><thead><tr><th>Time</th><th>User</th><th>Action</th><th>Subject</th><th>IP</th><th>Details</th></tr></thead><tbody>
-@forelse($logs as $l)<tr><td class="text-nowrap">{{ $l->created_at?->format('Y-m-d H:i:s') }}</td><td>{{ $l->user?->name ?? '-' }}</td><td><code>{{ $l->action }}</code></td>
-<td>{{ $l->subject_type ? class_basename($l->subject_type) . ' #' . $l->subject_id : '-' }}</td><td>{{ $l->ip_address }}</td><td class="small">{{ $l->metadata ? json_encode($l->metadata) : '' }}</td></tr>
-@empty<tr><td colspan="6" class="text-center text-muted py-3">No entries.</td></tr>@endforelse</tbody></table></div></div>
+<x-page-header title="Audit log" subtitle="Who did what, and when. Passwords, secrets and document text are never recorded." />
+<form class="mb-3" method="GET"><div class="input-group"><input class="form-control" name="action" value="{{ request('action') }}" placeholder="Filter by action prefix, e.g. document. or review."><button class="btn btn-ghost">Filter</button></div></form>
+<div class="nx-card">
+    @if($logs->isEmpty())
+        <x-empty icon="bi-journal-text" title="No entries">Activity will be listed here.</x-empty>
+    @else
+    <div class="table-responsive"><table class="nx-table">
+        <thead><tr><th>Time</th><th>User</th><th>Action</th><th>Subject</th><th>IP</th><th>Details</th></tr></thead>
+        <tbody>
+        @foreach($logs as $log)
+            <tr><td class="text-nowrap text-muted">{{ $log->created_at?->format('d M Y H:i:s') }}</td><td>{{ $log->user?->name ?? '-' }}</td><td><code>{{ $log->action }}</code></td>
+                <td class="text-muted">{{ $log->subject_type ? class_basename($log->subject_type) . ' #' . $log->subject_id : '-' }}</td>
+                <td class="text-muted">{{ $log->ip_address }}</td><td class="small text-muted">{{ $log->metadata ? json_encode($log->metadata) : '' }}</td></tr>
+        @endforeach
+        </tbody>
+    </table></div>
+    @endif
+</div>
 <div class="mt-3">{{ $logs->links('pagination::bootstrap-5') }}</div>
 @endsection
