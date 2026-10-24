@@ -1,0 +1,40 @@
+# Environment & secrets
+.env
+.env.backup
+*.env
+!.env.example
+
+# Composer / Laravel
+*.sqlite
+*.sqlite-journal
+/laravel-app/vendor/
+/laravel-app/storage/*.key
+/laravel-app/storage/oauth-*.key
+/laravel-app/storage/app/private/*
+!/laravel-app/storage/app/private/.gitignore
+/laravel-app/storage/framework/cache/*
+/laravel-app/storage/framework/sessions/*
+/laravel-app/storage/framework/views/*
+/laravel-app/storage/logs/*
+/laravel-app/bootstrap/cache/*
+/laravel-app/.phpunit.result.cache
+/laravel-app/public/storage
+
+# Python / AI Service
+ai-service/.venv/
+ai-service/venv/
+ai-service/data/
+ai-service/__pycache__/
+*.pyc
+*.pyo
+*.pyd
+.pytest_cache/
+.coverage
+htmlcov/
+
+# macOS & Editor
+.DS_Store
+.idea/
+.vscode/
+*.swp
+*.swo

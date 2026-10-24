@@ -1,0 +1,41 @@
+version: '3.8'
+
+services:
+  nexora-mysql:
+    image: mysql:8.0
+    container_name: nexora-mysql
+    restart: unless-stopped
+    environment:
+      MYSQL_DATABASE: nexora
+      MYSQL_USER: nexora
+      MYSQL_PASSWORD: nexora_password
+      MYSQL_ROOT_PASSWORD: root_password
+    ports:
+      - "127.0.0.1:3307:3306"
+    volumes:
+      - mysql_data:/var/lib/mysql
+    healthcheck:
+      test: ["CMD", "mysqladmin", "ping", "-h", "localhost"]
+      timeout: 10s
+      retries: 5
+
+  nexora-ai:
+    build:
+      context: ./ai-service
+      dockerfile: Dockerfile
+    container_name: nexora-ai
+    restart: unless-stopped
+    environment:
+      PORT: 8001
+      SERVICE_TOKEN: ${NEXORA_AI_SERVICE_TOKEN:-development-token-secret-123456}
+      DATA_DIR: /app/data
+      OCR_LANGS: auto
+      OCR_WORKERS: 3
+    ports:
+      - "127.0.0.1:8001:8001"
+    volumes:
+      - ai_data:/app/data
+
+volumes:
+  mysql_data:
+  ai_data:
