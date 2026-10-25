@@ -11,3 +11,17 @@ __pycache__/
 .DS_Store
 .idea/
 .vscode/
+
+# Laravel generated and dependency files
+/laravel-app/vendor/
+/laravel-app/node_modules/
+/laravel-app/.phpunit.result.cache
+
+# Local Laravel environment
+/laravel-app/.env
+/laravel-app/.env.*
+!/laravel-app/.env.example
+
+# Laravel local database and test cache
+/laravel-app/database/database.sqlite
+/laravel-app/.phpunit.result.cache
