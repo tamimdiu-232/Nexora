@@ -112,21 +112,10 @@ echo ""
 echo "[3/6] Setting up Laravel application..."
 cd "${LARAVEL_DIR}"
 
-if [ ! -d "vendor" ]; then
-    echo "  Installing Composer dependencies (vendor/)..."
-    composer install --no-interaction --prefer-dist --optimize-autoloader
-else
-    echo "  ✓ Composer dependencies already present."
-fi
-
 if [ ! -f ".env" ]; then
     echo "  Creating laravel-app/.env from .env.example..."
     cp .env.example .env
-fi
-
-# Ensure application key is generated
-if ! grep -q "^APP_KEY=base64:" .env 2>/dev/null; then
-    php artisan key:generate --force
+    php artisan key:generate
 fi
 
 # Ensure storage directories exist
@@ -139,19 +128,6 @@ chmod -R 775 storage bootstrap/cache
 if [ ! -L "public/storage" ]; then
     php artisan storage:link --quiet || true
 fi
-
-# Helper function to safely update .env values
-set_env_val() {
-    local key="$1"
-    local val="$2"
-    if grep -q "^${key}=" .env 2>/dev/null; then
-        sed -i '' "s|^${key}=.*|${key}=${val}|" .env 2>/dev/null || sed -i "s|^${key}=.*|${key}=${val}|" .env
-    elif grep -q "^# *${key}=" .env 2>/dev/null; then
-        sed -i '' "s|^# *${key}=.*|${key}=${val}|" .env 2>/dev/null || sed -i "s|^# *${key}=.*|${key}=${val}|" .env
-    else
-        echo "${key}=${val}" >> .env
-    fi
-}
 
 # --- 4. Database Initialization ---
 echo ""
@@ -167,38 +143,20 @@ if command -v "${MYSQL_BIN}" >/dev/null 2>&1; then
         # Create database and user if not exists
         "${MYSQL_BIN}" -u root -e "CREATE DATABASE IF NOT EXISTS \`nexora\` CHARACTER SET utf8mb4 COLLATE utf8mb4_unicode_ci;" 2>/dev/null || true
         "${MYSQL_BIN}" -u root -e "CREATE USER IF NOT EXISTS 'nexora'@'localhost' IDENTIFIED BY 'nexora_local_pass';" 2>/dev/null || true
-        "${MYSQL_BIN}" -u root -e "CREATE USER IF NOT EXISTS 'nexora'@'127.0.0.1' IDENTIFIED BY 'nexora_local_pass';" 2>/dev/null || true
-        "${MYSQL_BIN}" -u root -e "GRANT ALL PRIVILEGES ON \`nexora\`.* TO 'nexora'@'localhost'; GRANT ALL PRIVILEGES ON \`nexora\`.* TO 'nexora'@'127.0.0.1'; FLUSH PRIVILEGES;" 2>/dev/null || true
-
-        # Configure .env for MySQL connection
-        set_env_val "DB_CONNECTION" "mysql"
-        set_env_val "DB_HOST" "127.0.0.1"
-        set_env_val "DB_PORT" "${DB_PORT}"
-        set_env_val "DB_DATABASE" "nexora"
-        set_env_val "DB_USERNAME" "root"
-        set_env_val "DB_PASSWORD" ""
-
-        # Test running migrations
-        if php artisan migrate --force 2>/dev/null; then
-            php artisan db:seed --force
-            echo "  ✓ MySQL database initialized & seeded on port ${DB_PORT}."
-            DB_CONNECTED=true
-        else
-            echo "  ! Trying with nexora user credentials..."
-            set_env_val "DB_USERNAME" "nexora"
-            set_env_val "DB_PASSWORD" "nexora_local_pass"
-            if php artisan migrate --force 2>/dev/null; then
-                php artisan db:seed --force
-                echo "  ✓ MySQL database initialized & seeded with user nexora."
-                DB_CONNECTED=true
-            fi
-        fi
+        "${MYSQL_BIN}" -u root -e "GRANT ALL PRIVILEGES ON \`nexora\`.* TO 'nexora'@'localhost'; FLUSH PRIVILEGES;" 2>/dev/null || true
+        DB_CONNECTED=true
     fi
 fi
 
-if [ "${DB_CONNECTED}" != true ]; then
-    echo "  ! MySQL server connection not completed. Falling back to SQLite for local development..."
-    set_env_val "DB_CONNECTION" "sqlite"
+if [ "${DB_CONNECTED}" = true ]; then
+    echo "  Running MySQL migrations and database seeder..."
+    php artisan migrate --force
+    php artisan db:seed --force
+    echo "  ✓ MySQL database initialized & seeded."
+else
+    echo "  ! MySQL server is not currently reachable."
+    echo "    To use MySQL with XAMPP: start MySQL in the XAMPP Control Panel."
+    echo "    Initializing SQLite database for local development..."
     touch database/database.sqlite
     php artisan migrate:fresh --database=sqlite --force
     php artisan db:seed --database=sqlite --force
@@ -210,11 +168,7 @@ echo ""
 echo "[5/6] Checking synthetic test documents..."
 if [ -f "${ROOT_DIR}/scripts/make_sample_documents.py" ]; then
     cd "${ROOT_DIR}"
-    if [ -x "${AI_DIR}/.venv/bin/python" ]; then
-        "${AI_DIR}/.venv/bin/python" scripts/make_sample_documents.py
-    else
-        python3 scripts/make_sample_documents.py
-    fi
+    python3 scripts/make_sample_documents.py
 fi
 
 # --- 6. Done ---
